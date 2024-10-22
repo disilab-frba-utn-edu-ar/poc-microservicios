@@ -1,9 +1,9 @@
 # Ejemplo Arquitectura de Microservicios en Java 17 - Sistema de Órdenes y Productos
 
-Este proyecto muestra cómo crear microservicios simples con Spring Boot. Se permite la conexión entre sí mediante Spring Cloud Open Feign, sumado a la utilización de Spring Cloud  Eureka Server para implementar un Service Registry y Spring Cloud Gateway como API Gateway.
+Este proyecto muestra cómo crear microservicios simples con Spring Boot. Se permite la conexión entre sí mediante Spring Cloud Open Feign, sumado a la utilización de Spring Cloud Eureka Server para implementar un Service Registry y Spring Cloud Gateway como API Gateway.
 
 ## Arquitectura
-El proyecto sigue un estilo arquitectónico de microservicios. Se tienen dos microservicios (Órdenes y Productos) que se registran a sí mismos en el Service Discovery (implementado con Eureka Server) y se comunican entre sí mediante un cliente REST (Open Feign). Todo el sistema se esconde detrás del API Gateway.
+El módulo sigue un estilo arquitectónico de microservicios. Se tienen dos microservicios (Órdenes y Productos) que se registran a sí mismos en el Service Discovery (implementado con Eureka Server) y se comunican entre sí mediante un cliente REST (Open Feign). Todo el sistema se esconde detrás del API Gateway.
 
 ## Tecnologías Utilizadas
 
@@ -16,6 +16,24 @@ El proyecto sigue un estilo arquitectónico de microservicios. Se tienen dos mic
 - **Spring Cloud Netflix Eureka**
 - **Spring Cloud Gateway**
 - **Spring Cloud Open Feign**
+
+## Estructura de Proyecto
+Los proyectos de Órdenes y Productos está organizado de la siguiente manera:
+
+src/
+ └── main/
+     └── java/
+         └── utn/
+             └── ba/
+                 └── `nombre del proyecto`/
+                     ├── controllers/      # Controladores REST
+                     ├── dtos/             # Data Transfer Object
+                     ├── exceptions/       # Manejo de Excepciones
+                     ├── mappers/          # Mapeadores de DTOs a Entidades
+                     ├── models/           # Entidades y Repositorios
+                     ├── services/         # Servicios
+                     └── client/           # Lógica para comunicación con otro microservicio, en caso de que corresponda
+                     └── Application.java  # Clase principal
 
 ## Pasos para Ejecución del Proyecto
 
