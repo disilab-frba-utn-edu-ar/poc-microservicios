@@ -16,7 +16,7 @@ public class OrderOutputDTO {
     private ProductOutputDTO product;
     private Integer amount;
     private Float finalPrice;
-
+    private String description = "";
 
 
 }

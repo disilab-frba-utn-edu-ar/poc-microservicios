@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/Microservices-Sample-using-SpringBoot-SpringCloud-Eureka-and-Zuul.iml" filepath="$PROJECT_DIR$/.idea/Microservices-Sample-using-SpringBoot-SpringCloud-Eureka-and-Zuul.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/Microservices-Sample-using-SpringBoot-SpringCloud-Eureka-and-SpringCloud-Gateway.iml" filepath="$PROJECT_DIR$/.idea/Microservices-Sample-using-SpringBoot-SpringCloud-Eureka-and-SpringCloud-Gateway.iml" />
     </modules>
   </component>
 </project>

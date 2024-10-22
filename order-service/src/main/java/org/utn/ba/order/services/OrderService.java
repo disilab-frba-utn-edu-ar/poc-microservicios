@@ -1,5 +1,7 @@
 package org.utn.ba.order.services;
 
+import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
+import io.github.resilience4j.retry.annotation.Retry;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.utn.ba.order.client.ProductClient;
@@ -24,6 +26,7 @@ public class OrderService implements IOrderService {
     private ProductClient productClient;
 
     @Override
+    @CircuitBreaker(name="product",fallbackMethod = "fallbackGetProductById" )
     public List<OrderOutputDTO> findAll() {
 
         List<Order> orders = orderRepository.findAll();
@@ -33,6 +36,17 @@ public class OrderService implements IOrderService {
             return OrderMapper.createFrom(order, product);
         }).collect(Collectors.toList());
 
+    }
+
+    public List<OrderOutputDTO> fallbackGetProductById(Throwable t) {
+        List<Order> orders = orderRepository.findAll();
+        return orders.stream().map(order -> {
+            ProductOutputDTO product = ProductOutputDTO.builder()
+                            .name("Cannot get product detail as Product Service may be down, error is -> " + t.getMessage())
+                            .price(0f)
+                            .id(order.getProductId()).build();
+            return OrderMapper.createFrom(order, product);
+        }).collect(Collectors.toList());
     }
 
     @Override
@@ -51,6 +65,7 @@ public class OrderService implements IOrderService {
     }
 
     @Override
+    @CircuitBreaker(name="product",fallbackMethod = "fallbackCreateOrderWithProduct" )
     public OrderOutputDTO createOrder(OrderInputDTO order) {
 
         Order newOrder = OrderMapper.createFrom(order);
@@ -62,5 +77,13 @@ public class OrderService implements IOrderService {
         this.orderRepository.save(newOrder);
         return OrderMapper.createFrom(newOrder, product);
 
+    }
+
+    public OrderOutputDTO fallbackCreateOrderWithProduct(Throwable t) {
+
+       return OrderOutputDTO.builder()
+               .description("Failed to create Order as " +
+                       "Product Service may be down, error -> " + t.getMessage())
+               .build();
     }
 }
