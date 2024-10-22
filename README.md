@@ -27,13 +27,14 @@ src/
              └── ba/
                  └── nombre_del_proyecto/
                      ├── controllers/      # Controladores REST
-                     ├── dtos/             # Data Transfer Object
+                     ├── dtos/             # Data Transfer Objects (DTOs)
                      ├── exceptions/       # Manejo de Excepciones
-                     ├── mappers/          # Mapeadores de DTOs a Entidades
-                     ├── models/           # Entidades y Repositorios
-                     ├── services/         # Servicios
-                     └── client/           # Lógica para comunicación con otro microservicio, en caso de que corresponda
-                     └── Application.java  # Clase principal
+                     ├── mappers/          # Mapeadores de DTOs a Entidades y viceversa
+                     ├── models/           # Entidades del dominio y Repositorios
+                     ├── services/         # Lógica de negocio y servicios de aplicación
+                     ├── client/           # Comunicación con otros microservicios, si aplica
+                     └── Application.java  # Clase principal del proyecto
+
 
 ## Pasos para Ejecución del Proyecto
 
