@@ -25,7 +25,7 @@ src/
      └── java/
          └── utn/
              └── ba/
-                 └── `nombre del proyecto`/
+                 └── nombre_del_proyecto/
                      ├── controllers/      # Controladores REST
                      ├── dtos/             # Data Transfer Object
                      ├── exceptions/       # Manejo de Excepciones
