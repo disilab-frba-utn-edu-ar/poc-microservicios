@@ -28,15 +28,14 @@ src/
              └── utn/
                  └── ba/
                      └── service/
+                         ├── client/                  # Lógica para llamar a otro Servicio con OpenFeign
                          ├── controllers/             # Controladores REST
                          ├── dtos/                    # Data Transfer Object
                          ├── exceptions/              # Manejo de Excepciones
                          ├── mappers/                 # Mapeadores de DTOs a Entidades
                          ├── models/                  # Entidades y Repositorios
                          ├── services/                # Servicios
-                         ├── client/                  # Lógica para llamar a otro Servicio con OpenFeign
                          └── ServiceApplication.java  # Clase principal
-
 ```
 ## Pasos para Ejecución del Proyecto
 
