@@ -18,7 +18,7 @@ El módulo sigue un estilo arquitectónico de microservicios. Se tienen dos micr
 - **Spring Cloud Open Feign**
 
 ## Estructura de Proyecto
-Los proyectos de Órdenes y Productos está organizado de la siguiente manera:
+Los proyectos de Órdenes y Productos están organizados de la siguiente manera:
 
 ```plaintext
 src/
