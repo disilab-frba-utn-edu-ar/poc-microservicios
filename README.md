@@ -5,6 +5,10 @@ Este proyecto muestra cómo crear microservicios simples con Spring Boot. Se per
 ## Arquitectura
 El módulo sigue un estilo arquitectónico de microservicios. Se tienen dos microservicios (Órdenes y Productos) que se registran a sí mismos en el Service Discovery (implementado con Eureka Server) y se comunican entre sí mediante un cliente REST (Open Feign). Todo el sistema se esconde detrás del API Gateway.
 
+El diagrama de componentes que comunica esta arquitectura es:
+![image](https://github.com/user-attachments/assets/eaca40e2-e64e-471e-b83e-17a8aa9d3778)
+
+
 ## Tecnologías Utilizadas
 
 - **Java 17**
