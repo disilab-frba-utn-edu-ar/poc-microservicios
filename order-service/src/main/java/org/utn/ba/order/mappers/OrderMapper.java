@@ -16,6 +16,7 @@ public class OrderMapper {
                 .product(product)
                 .finalPrice(order.getFinalPrice())
                 .amount(order.getAmount())
+                .description("")
                 .build();
     }
 

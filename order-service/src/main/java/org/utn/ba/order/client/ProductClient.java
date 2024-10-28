@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.utn.ba.order.client.dto.ProductOutputDTO;
 
-@FeignClient(name = "product-service", url = "http://localhost:9811")
+@FeignClient(name = "product-service")
 public interface ProductClient {
 
     @GetMapping(value ="/products/{id}", consumes = "application/json", produces = "application/json")
