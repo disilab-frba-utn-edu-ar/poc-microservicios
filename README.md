@@ -5,6 +5,10 @@ Este proyecto muestra cómo crear microservicios simples con Spring Boot. Se per
 ## Arquitectura
 El módulo sigue un estilo arquitectónico de microservicios. Se tienen dos microservicios (Órdenes y Productos) que se registran a sí mismos en el Service Discovery (implementado con Eureka Server) y se comunican entre sí mediante un cliente REST (Open Feign). Todo el sistema se esconde detrás del API Gateway.
 
+El diagrama de componentes que comunica esta arquitectura es:
+![image](https://github.com/user-attachments/assets/eaca40e2-e64e-471e-b83e-17a8aa9d3778)
+
+
 ## Tecnologías Utilizadas
 
 - **Java 17**
@@ -18,28 +22,29 @@ El módulo sigue un estilo arquitectónico de microservicios. Se tienen dos micr
 - **Spring Cloud Open Feign**
 
 ## Estructura de Proyecto
-Los proyectos de Órdenes y Productos está organizado de la siguiente manera:
+Los proyectos de Órdenes y Productos están organizados de la siguiente manera:
 
+```plaintext
 src/
  └── main/
      └── java/
-         └── utn/
-             └── ba/
-                 └── nombre_del_proyecto/
-                     ├── controllers/      # Controladores REST
-                     ├── dtos/             # Data Transfer Objects (DTOs)
-                     ├── exceptions/       # Manejo de Excepciones
-                     ├── mappers/          # Mapeadores de DTOs a Entidades y viceversa
-                     ├── models/           # Entidades del dominio y Repositorios
-                     ├── services/         # Lógica de negocio y servicios de aplicación
-                     ├── client/           # Comunicación con otros microservicios, si aplica
-                     └── Application.java  # Clase principal del proyecto
-
-
+         └── com/
+             └── utn/
+                 └── ba/
+                     └── service/
+                         ├── client/                  # Lógica para llamar a otro Servicio con OpenFeign
+                         ├── controllers/             # Controladores REST
+                         ├── dtos/                    # Data Transfer Object
+                         ├── exceptions/              # Manejo de Excepciones
+                         ├── mappers/                 # Mapeadores de DTOs a Entidades
+                         ├── models/                  # Entidades y Repositorios
+                         ├── services/                # Servicios
+                         └── ServiceApplication.java  # Clase principal
+```
 ## Pasos para Ejecución del Proyecto
 
 - **1.** Clonar la aplicación.
-- **2.** Cambiar los puertos para las aplicaciones como prefiera. Para eso, abrir en los proyectos  `src/main/resources/application.properties` y cambiar la propiedad `server.port`. Para el API Gateway se puede cambiar el puerto por defecto abriendo el archivo  `src/main/resources/application.yml` y cambiar la propiedad `server.port`.
+- **2.** Cambiar los puertos para las aplicaciones como prefieras. Para eso, abrir en los proyectos  `src/main/resources/application.properties` y cambiar la propiedad `server.port`. Para el API Gateway se puede cambiar el puerto por defecto abriendo el archivo  `src/main/resources/application.yml` y cambiar la propiedad `server.port`.
 - **3.** Correr el Service Registry & Discovery. Iniciará en el puerto `8761` por defecto. Una vez que inicie la aplicación, podrás visitar el *dashboard* de Eureka bajo  `http://localhost:8761`.
 - **4.** Correr los microservicios de Productos y de Órdenes.
 - **5.** Correr el API Gateway. Este permitirá redirigir cualquier solicitud al microservicio específico dependiendo de la configuración del *proxy*. 
