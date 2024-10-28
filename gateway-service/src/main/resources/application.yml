@@ -16,6 +16,15 @@ spring:
           predicates:
             - Path=/orders/**
 
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health, info  # Habilita los endpoints health e info
+  endpoint:
+    health:
+      show-details: always  # Muestra todos los detalles en /actuator/health
+
 
 eureka:
   client:
