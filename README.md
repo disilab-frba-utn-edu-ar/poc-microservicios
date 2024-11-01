@@ -1,6 +1,6 @@
 # Ejemplo Arquitectura de Microservicios en Java 17 - Sistema de Órdenes y Productos
 
-Este proyecto muestra cómo crear microservicios simples con Spring Boot. Se permite la conexión entre sí mediante Spring Cloud Open Feign, sumado a la utilización de Spring Cloud Eureka Server para implementar un Service Registry y Spring Cloud Gateway como API Gateway.
+Este proyecto muestra cómo crear microservicios simples con Spring Boot. Se permite la conexión entre sí mediante Spring Cloud Open Feign, sumado a la utilización de Spring Cloud Eureka Server para implementar un Service Registry y Spring Cloud Gateway como API Gateway. 
 
 ## Arquitectura
 El módulo sigue un estilo arquitectónico de microservicios. Se tienen dos microservicios (Órdenes y Productos) que se registran a sí mismos en el Service Discovery (implementado con Eureka Server) y se comunican entre sí mediante un cliente REST (Open Feign). Todo el sistema se esconde detrás del API Gateway.
