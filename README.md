@@ -17,9 +17,10 @@ El diagrama de componentes que comunica esta arquitectura es:
 - **Maven** (gestor de dependencias)
 - **Lombok** (para reducir el código boilerplate)
 - **MySQL**
-- **Spring Cloud Netflix Eureka**
-- **Spring Cloud Gateway**
-- **Spring Cloud Open Feign**
+- **Spring Cloud Netflix Eureka** (Service Registry & Discovery)
+- **Spring Cloud Gateway** (API Gateway)
+- **Spring Cloud Open Feign** (Cliente REST)
+- **Resilience 4J** (Circuit Breaker)
 
 ## Estructura de Proyecto
 Los proyectos de Órdenes y Productos están organizados de la siguiente manera:
@@ -28,11 +29,11 @@ Los proyectos de Órdenes y Productos están organizados de la siguiente manera:
 src/
  └── main/
      └── java/
-         └── com/
+         └── org/
              └── utn/
                  └── ba/
                      └── service/
-                         ├── client/                  # Lógica para llamar a otro Servicio con OpenFeign
+                         ├── client/                  # Lógica para llamar a otro Microservicio con OpenFeign
                          ├── controllers/             # Controladores REST
                          ├── dtos/                    # Data Transfer Object
                          ├── exceptions/              # Manejo de Excepciones
@@ -46,5 +47,8 @@ src/
 - **1.** Clonar la aplicación.
 - **2.** Cambiar los puertos para las aplicaciones como prefieras. Para eso, abrir en los proyectos  `src/main/resources/application.properties` y cambiar la propiedad `server.port`. Para el API Gateway se puede cambiar el puerto por defecto abriendo el archivo  `src/main/resources/application.yml` y cambiar la propiedad `server.port`.
 - **3.** Correr el Service Registry & Discovery. Iniciará en el puerto `8761` por defecto. Una vez que inicie la aplicación, podrás visitar el *dashboard* de Eureka bajo  `http://localhost:8761`.
-- **4.** Correr los microservicios de Productos y de Órdenes.
-- **5.** Correr el API Gateway. Este permitirá redirigir cualquier solicitud al microservicio específico dependiendo de la configuración del *proxy*. 
+- **4.** Correr los microservicios de Productos y de Órdenes. 
+- **5.** Correr el API Gateway. Este permitirá redirigir cualquier solicitud al microservicio específico dependiendo de la configuración del *proxy*.
+  
+## Circuit Breaker
+En caso de que una instancia del microservicio de Productos falle o esté caído y se realice una solicitud a este mediante el microservicio de Órdenes, se activará el Circuit Breaker provisto por Resilience4J. 
