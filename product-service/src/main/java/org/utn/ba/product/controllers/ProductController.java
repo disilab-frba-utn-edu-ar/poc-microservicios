@@ -9,6 +9,8 @@ import org.utn.ba.product.dto.ProductInputDTO;
 import org.utn.ba.product.dto.ProductOutputDTO;
 import org.utn.ba.product.services.IProductService;
 
+import java.util.List;
+
 @RestController
 @RequestMapping(value = "/products", produces = "application/json")
 public class ProductController {
@@ -16,6 +18,13 @@ public class ProductController {
 
     @Autowired
     private IProductService productService;
+
+    @GetMapping
+    public ResponseEntity<List<ProductOutputDTO>> getAllProducts() {
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(this.productService.findAll());
+    }
 
     @GetMapping("/{id}")
     public ResponseEntity<ProductOutputDTO> getProductById(@PathVariable Long id) {
