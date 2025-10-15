@@ -6,17 +6,28 @@ import org.utn.ba.cartservice.dto.output.CartItemOutputDTO;
 import org.utn.ba.cartservice.entities.models.CartItem;
 
 public class CartItemMapper {
-  private static CartItemOutputDTO toDto(CartItem item){
+  public static CartItemOutputDTO toDto(CartItem item) {
+
+    if (item == null) {
+      return null;
+    }
+
     return CartItemOutputDTO.builder()
         .productId(item.getProductId())
         .productName(item.getProductName())
         .amount(item.getAmount())
         .priceAtTimeOfAdd(item.getPriceAtTimeOfAdd())
-        .imageUrl(item.getProductName())
+        .imageUrl(item.getImageUrl())
         .build();
   }
 
-  private static CartItem fromDto(ProductOutputDTO dto){
-    return null;
+  public static CartItem fromDto(ProductOutputDTO product, CartItemInputDTO inputDTO) {
+    return CartItem.builder()
+        .productId(product.getId())
+        .productName(product.getName())
+        .priceAtTimeOfAdd(product.getPrice())
+        //TODO: .imageUrl(product.getImageUrl())
+        .amount(inputDTO.amount())
+        .build();
   }
 }

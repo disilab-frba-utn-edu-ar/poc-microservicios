@@ -34,7 +34,7 @@ public class ProductController {
         if(product == null)
             throw new NotFoundException("No product was found with ID" + id);
 
-        return ResponseEntity.ok(this.productService.findById(id));
+        return ResponseEntity.ok(product);
     }
 
     @PostMapping

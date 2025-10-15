@@ -18,7 +18,7 @@ public class SecurityConfig {
         .csrf(ServerHttpSecurity.CsrfSpec::disable)
 
         .authorizeExchange(exchanges -> exchanges
-            .pathMatchers(HttpMethod.GET, "/products/**", "/photos/**").permitAll()
+            .pathMatchers(HttpMethod.GET, "/products/**", "/images/**").permitAll()
 
             .pathMatchers(HttpMethod.POST, "/products/**").hasAuthority("SCOPE_admin")
             .pathMatchers(HttpMethod.PUT, "/products/**").hasAuthority("SCOPE_admin")
