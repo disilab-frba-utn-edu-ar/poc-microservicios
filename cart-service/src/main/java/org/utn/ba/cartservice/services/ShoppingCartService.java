@@ -39,7 +39,7 @@ public class ShoppingCartService implements IShoppingCartService {
         .priceAtTimeOfAdd(product.getPrice())
         .productName(product.getName())
         .amount(itemInputDTO.amount())
-        //.imageUrl(product.getImageUrl())
+        .imageUrl(product.getImageUrl())
         .build();
 
     cart.addItem(newItem);

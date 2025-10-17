@@ -5,6 +5,8 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 @Table(name="`order`")
 @Entity
@@ -22,11 +24,23 @@ public class Order {
     private LocalDate date;
 
     @Column
-    private Long productId;
-
-    @Column
-    private Integer amount;
-
-    @Column
     private Float finalPrice;
+
+    @Embedded
+    private UserDetails userDetails;
+
+    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
+    private List<OrderItem> orderItems = new ArrayList<>();
+
+    public void addOrderItem(OrderItem item) {
+        this.orderItems.add(item);
+        item.setOrder(this); // OJO con esto por la relacion bidireccinoal en hibernate
+    }
+
+    public void calculateFinalPrice() {
+        double sum = this.orderItems.stream()
+            .mapToDouble(item -> item.getPrice() * item.getAmount())
+            .sum();
+        this.finalPrice = (float) sum;
+    }
 }

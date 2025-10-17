@@ -1,32 +1,36 @@
 package org.utn.ba.order.mappers;
 
-import org.utn.ba.order.client.dto.ProductOutputDTO;
-import org.utn.ba.order.dto.OrderInputDTO;
+import org.utn.ba.order.dto.OrderItemOutputDTO;
 import org.utn.ba.order.dto.OrderOutputDTO;
 import org.utn.ba.order.entities.models.Order;
+import org.utn.ba.order.entities.models.OrderItem;
 
 public class OrderMapper {
 
-    public static OrderOutputDTO createFrom (Order order, ProductOutputDTO product) {
+    public static OrderItemOutputDTO createFrom (OrderItem item) {
 
-        return OrderOutputDTO.
+        return OrderItemOutputDTO.
                 builder()
-                .id(order.getId())
-                .date(order.getDate())
-                .product(product)
-                .finalPrice(order.getFinalPrice())
-                .amount(order.getAmount())
-                .description("")
+                .id(item.getId())
+                .productId(item.getProductId())
+                .productName(item.getProductName())
+                .amount(item.getAmount())
+                .price(item.getPrice())
+                .imageUrl(item.getImageUrl())
                 .build();
     }
 
-    public static Order createFrom (OrderInputDTO orderInputDTO) {
 
-        return Order.builder()
-                .date(orderInputDTO.getDate())
-                .productId(orderInputDTO.getProductId())
-                .amount(orderInputDTO.getAmount())
-                .build();
+
+    public static OrderOutputDTO createFrom(Order order){
+        return OrderOutputDTO.builder()
+            .id(order.getId())
+            .description("Successful order")
+            .userDetails(UserDetailsMapper.createFrom(order.getUserDetails()))
+            .date(order.getDate())
+            .finalPrice(order.getFinalPrice())
+            .orderItems(order.getOrderItems().stream().map(OrderMapper::createFrom).toList())
+            .build();
     }
 
 }

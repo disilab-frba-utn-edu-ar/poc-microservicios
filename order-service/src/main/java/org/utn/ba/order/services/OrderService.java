@@ -1,89 +1,97 @@
 package org.utn.ba.order.services;
 
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
-import io.github.resilience4j.retry.annotation.Retry;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.utn.ba.order.client.ProductClient;
+import org.utn.ba.order.client.ShoppingCartClient;
 import org.utn.ba.order.client.dto.ProductOutputDTO;
-import org.utn.ba.order.dto.OrderInputDTO;
+import org.utn.ba.order.client.dto.ShoppingCartOutputDTO;
 import org.utn.ba.order.dto.OrderOutputDTO;
-import org.utn.ba.order.mappers.OrderMapper;
+import org.utn.ba.order.dto.UserDetailsDTO;
 import org.utn.ba.order.entities.models.Order;
+import org.utn.ba.order.entities.models.OrderItem;
 import org.utn.ba.order.entities.repositories.repositories.OrderRepository;
-
+import org.utn.ba.order.mappers.OrderMapper;
+import org.utn.ba.order.mappers.UserDetailsMapper;
+import java.time.LocalDate;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
 public class OrderService implements IOrderService {
 
-    @Autowired
-    private OrderRepository orderRepository;
+  @Autowired
+  private OrderRepository orderRepository;
 
-    @Autowired
-    private ProductClient productClient;
+  @Autowired
+  private ProductClient productClient;
 
-    @Override
-    @CircuitBreaker(name="product",fallbackMethod = "fallbackGetProductById" )
-    public List<OrderOutputDTO> findAll() {
+  @Autowired
+  private ShoppingCartClient cartClient;
 
-        List<Order> orders = orderRepository.findAll();
+  @Override
+  public List<OrderOutputDTO> findAll() {
 
-        return orders.stream().map(order -> {
-            ProductOutputDTO product = productClient.getProductById(order.getProductId()).getBody();
-            return OrderMapper.createFrom(order, product);
-        }).collect(Collectors.toList());
+    return orderRepository.findAll()
+        .stream()
+        .map(OrderMapper::createFrom).
+        collect(Collectors.toList());
+  }
 
+
+  @Override
+  public OrderOutputDTO findById(Long id) {
+
+    return orderRepository.findById(id)
+        .map(OrderMapper::createFrom)
+        .orElse(null);
+  }
+
+  @Override
+  @CircuitBreaker(name = "product", fallbackMethod = "fallbackCreateOrderWithProduct")
+  public OrderOutputDTO createOrder(UserDetailsDTO userDetailsDTO) {
+    ShoppingCartOutputDTO cart = cartClient.getMyCart();
+    if (cart == null || cart.getItems().isEmpty()) {
+      throw new IllegalStateException("Cannot create an order from an empty cart.");
     }
 
-    public List<OrderOutputDTO> fallbackGetProductById(Throwable t) {
-        List<Order> orders = orderRepository.findAll();
-        return orders.stream().map(order -> {
-            ProductOutputDTO product = ProductOutputDTO.builder()
-                            .name("Cannot get product detail as Product Service may be down, error is -> " + t.getMessage())
-                            .price(0f)
-                            .id(order.getProductId()).build();
-            return OrderMapper.createFrom(order, product);
-        }).collect(Collectors.toList());
-    }
+    Order newOrder = new Order();
+    newOrder.setDate(LocalDate.now());
+    newOrder.setUserDetails(UserDetailsMapper.createFrom(userDetailsDTO));
+    List<OrderItem> itemList = cart.getItems()
+        .stream().map(i -> {
+          ProductOutputDTO product = productClient.getProductById(i.getProductId()).getBody();
+          return OrderItem.builder()
+              .productId(product.getId())
+              .price(product.getPrice())
+              .amount(i.getAmount())
+              .imageUrl(product.getImageUrl())
+              .order(newOrder)
+              .productName(product.getName())
+              .build();
+        })
+        .toList();
 
-    @Override
-    public OrderOutputDTO findById(Long id) {
+    itemList.forEach(newOrder::addOrderItem);
 
-        Optional<Order> order = orderRepository.findById(id);
+    newOrder.calculateFinalPrice();
+    this.orderRepository.save(newOrder);
 
-        if (order.isPresent()) {
-            ProductOutputDTO product = productClient.getProductById(order.get().getProductId()).getBody();
-            return order.map(o -> OrderMapper.createFrom(o, product)).orElse(null);
 
-        }
+    // TODO: que pasa si falla justo aca?
+    cartClient.clearMyCart();
 
-        return null;
+    return OrderMapper.createFrom(newOrder);
 
-    }
+  }
 
-    @Override
-    @CircuitBreaker(name="product",fallbackMethod = "fallbackCreateOrderWithProduct" )
-    public OrderOutputDTO createOrder(OrderInputDTO order) {
+  public OrderOutputDTO fallbackCreateOrderWithProduct(Throwable t) {
 
-        Order newOrder = OrderMapper.createFrom(order);
+    return OrderOutputDTO.builder()
+        .description("Failed to create Order as " +
+            "Product Service or Cart service may be down, error -> " + t.getMessage())
+        .build();
+  }
 
-        ProductOutputDTO product = productClient.getProductById(order.getProductId()).getBody();
-
-        newOrder.setFinalPrice(product.getPrice() * newOrder.getAmount());
-
-        this.orderRepository.save(newOrder);
-        return OrderMapper.createFrom(newOrder, product);
-
-    }
-
-    public OrderOutputDTO fallbackCreateOrderWithProduct(Throwable t) {
-
-       return OrderOutputDTO.builder()
-               .description("Failed to create Order as " +
-                       "Product Service may be down, error -> " + t.getMessage())
-               .build();
-    }
 }

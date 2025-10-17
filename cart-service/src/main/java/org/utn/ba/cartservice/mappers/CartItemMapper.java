@@ -26,7 +26,7 @@ public class CartItemMapper {
         .productId(product.getId())
         .productName(product.getName())
         .priceAtTimeOfAdd(product.getPrice())
-        //TODO: .imageUrl(product.getImageUrl())
+        .imageUrl(product.getImageUrl())
         .amount(inputDTO.amount())
         .build();
   }
