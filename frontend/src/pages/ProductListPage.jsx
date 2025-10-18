@@ -3,7 +3,7 @@ import { useAuth0 } from '@auth0/auth0-react';
 import apiClient from '../services/api';
 import { toast } from 'react-toastify';
 import LoadingSpinner from '../components/LoadingSpinner';
-import { useCartCount } from '../hooks/useCartCount';
+import { useCart } from '../contexts/CartContext';
 import ProductCard from '../components/ProductCard';
 
 const ProductListPage = () => {
@@ -11,7 +11,7 @@ const ProductListPage = () => {
     const [isLoading, setIsLoading] = useState(true);
     const { isAuthenticated, loginWithRedirect } = useAuth0();
     const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
-    const { refreshCartCount } = useCartCount();
+    const { addToCart } = useCart();
 
     useEffect(() => {
         const fetchProducts = async () => {
@@ -33,15 +33,18 @@ const ProductListPage = () => {
             return;
         }
 
-        await toast.promise(
-            apiClient.post('/carts/items', { productId, amount: 1 }),
-            {
-                pending: 'Adding to cart...',
-                success: 'Item added to cart!',
-                error: 'Could not add item. Service may be down.'
-            }
-        );
-        refreshCartCount(); // Refresh cart count in navbar
+        try {
+            await toast.promise(
+                addToCart(productId, 1),
+                {
+                    pending: 'Agregando al carrito...',
+                    success: '¡Producto agregado al carrito!',
+                    error: 'No se pudo agregar el producto. El servicio puede estar fuera de línea.'
+                }
+            );
+        } catch (error) {
+            console.error('Error adding to cart:', error);
+        }
     };
 
     if (isLoading) {

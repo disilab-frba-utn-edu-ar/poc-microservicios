@@ -2,12 +2,12 @@ import React from 'react';
 import { useAuth0 } from '@auth0/auth0-react';
 import { Link, NavLink } from 'react-router-dom';
 import { useAdminCheck } from '../hooks/useAdminCheck';
-import { useCartCount } from '../hooks/useCartCount';
+import { useCart } from '../contexts/CartContext';
 
 const Navbar = () => {
     const { loginWithRedirect, logout, user, isAuthenticated, isLoading } = useAuth0();
     const { isAdmin } = useAdminCheck();
-    const { cartCount } = useCartCount();
+    const { cartCount } = useCart();
 
     return (
         <header className="bg-white shadow-md sticky top-0 z-10">

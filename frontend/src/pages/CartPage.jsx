@@ -1,62 +1,40 @@
-import React, { useState, useEffect, useCallback } from 'react';
-import apiClient from '../services/api';
+import React, { useState } from 'react';
 import { toast } from 'react-toastify';
 import { Link } from 'react-router-dom';
 import LoadingSpinner from '../components/LoadingSpinner';
-import { useCartCount } from '../hooks/useCartCount';
+import { useCart } from '../contexts/CartContext';
 import CartItemCard from '../components/CartItemCard';
 
 const CartPage = () => {
-    const [cart, setCart] = useState(null);
-    const [isLoading, setIsLoading] = useState(true);
     const [isCheckingOut, setIsCheckingOut] = useState(false);
     const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
-    const { refreshCartCount } = useCartCount();
-
-    const fetchCart = useCallback(async () => {
-        setIsLoading(true);
-        try {
-            const response = await apiClient.get('/carts');
-            setCart(response.data);
-        } catch (error) {
-            console.error("Fetch cart failed:", error);
-            toast.error('Could not fetch your cart.');
-            setCart({ items: [] });
-        } finally {
-            setIsLoading(false);
-        }
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, []);
-
-    useEffect(() => {
-        fetchCart();
-    }, [fetchCart]);
+    const { cart, isLoading, updateCartItem, removeFromCart, checkout } = useCart();
 
     const handleUpdateQuantity = async (productId, amount) => {
-        const updatePromise = apiClient.patch(`/carts/items/${productId}`, { amount });
-        toast.promise(
-            updatePromise,
-            { pending: 'Updating amount...', success: 'Amount updated!', error: 'Update failed.' }
-        );
         try {
-            const response = await updatePromise;
-            setCart(response.data);
-            refreshCartCount(); // Refresh cart count in navbar
+            await toast.promise(
+                updateCartItem(productId, amount),
+                { 
+                    pending: 'Actualizando cantidad...', 
+                    success: '¡Cantidad actualizada!', 
+                    error: 'Error al actualizar la cantidad.' 
+                }
+            );
         } catch (error) {
             console.error("Update failed:", error);
         }
     };
 
     const handleDeleteItem = async (productId) => {
-        const deletePromise = apiClient.delete(`/carts/items/${productId}`);
-        toast.promise(
-            deletePromise,
-            { pending: 'Removing item...', success: 'Item removed!', error: 'Failed to remove item.' }
-        );
         try {
-            const response = await deletePromise;
-            setCart(response.data);
-            refreshCartCount(); // Refresh cart count in navbar
+            await toast.promise(
+                removeFromCart(productId),
+                { 
+                    pending: 'Eliminando producto...', 
+                    success: '¡Producto eliminado!', 
+                    error: 'Error al eliminar el producto.' 
+                }
+            );
         } catch (error) {
             console.error("Delete failed:", error);
         }
@@ -66,15 +44,13 @@ const CartPage = () => {
         setIsCheckingOut(true);
         try {
             await toast.promise(
-                apiClient.post('/orders'),
+                checkout(),
                 {
                     pending: 'Procesando tu pedido...',
                     success: '¡Pedido realizado exitosamente!',
                     error: 'Error al procesar el pedido. Inténtalo de nuevo.'
                 }
             );
-            fetchCart();
-            refreshCartCount();
         } catch (error) {
             console.error("Checkout failed:", error);
         } finally {
