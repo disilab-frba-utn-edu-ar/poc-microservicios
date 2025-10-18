@@ -38,7 +38,7 @@ const Navbar = () => {
                             
                             {isAdmin && (
                                 <NavLink to="/admin" className={({ isActive }) => `text-gray-600 hover:text-blue-600 ${isActive ? 'font-bold' : ''}`}>
-                                    Admin
+                                    Crear producto
                                 </NavLink>
                             )}
                         </>
@@ -49,12 +49,12 @@ const Navbar = () => {
                         <div className="w-8 h-8 border-2 border-dashed rounded-full animate-spin border-blue-500"></div>
                     ) : isAuthenticated ? (
                         <div className="flex items-center space-x-2">
-                            <span className="text-sm">Hi, {user.given_name || user.name}!</span>
+                            <span className="text-sm">Hola, {user.given_name || user.name}!</span>
                             <button
                                 onClick={() => logout({ logoutParams: { returnTo: window.location.origin } })}
                                 className="bg-red-500 hover:bg-red-600 text-white px-3 py-2 text-sm rounded-md transition"
                             >
-                                Log Out
+                                Cerrar sesión
                             </button>
                         </div>
                     ) : (
@@ -62,7 +62,7 @@ const Navbar = () => {
                             onClick={() => loginWithRedirect()}
                             className="bg-green-500 hover:bg-green-600 text-white px-3 py-2 text-sm rounded-md transition"
                         >
-                            Log In
+                            Iniciar sesión
                         </button>
                     )}
                 </div>

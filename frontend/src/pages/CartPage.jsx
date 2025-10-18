@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { toast } from 'react-toastify';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import LoadingSpinner from '../components/LoadingSpinner';
 import { useCart } from '../contexts/CartContext';
 import CartItemCard from '../components/CartItemCard';
@@ -9,6 +9,7 @@ const CartPage = () => {
     const [isCheckingOut, setIsCheckingOut] = useState(false);
     const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
     const { cart, isLoading, updateCartItem, removeFromCart, checkout } = useCart();
+    const navigate = useNavigate();
 
     const handleUpdateQuantity = async (productId, amount) => {
         try {
@@ -51,6 +52,9 @@ const CartPage = () => {
                     error: 'Error al procesar el pedido. Inténtalo de nuevo.'
                 }
             );
+            
+            // Redirect to success page after successful checkout
+            navigate('/order-success');
         } catch (error) {
             console.error("Checkout failed:", error);
         } finally {

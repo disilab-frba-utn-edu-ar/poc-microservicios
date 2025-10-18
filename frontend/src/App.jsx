@@ -11,6 +11,7 @@ import LandingPage from './pages/LandingPage';
 import ProductListPage from './pages/ProductListPage';
 import CartPage from './pages/CartPage';
 import AdminPage from './pages/AdminPage';
+import OrderSuccessPage from './pages/OrderSuccessPage';
 import ProtectedRoute from './components/ProtectedRoute';
 import AdminRoute from "./components/AdminRoute.jsx";
 
@@ -34,6 +35,7 @@ function App() {
                         <Route path="/" element={isAuthenticated ? <ProductListPage /> : <LandingPage />} />
                         <Route path="/cart" element={<ProtectedRoute component={CartPage} />} />
                         <Route path="/admin" element={<AdminRoute component={AdminPage} />} />
+                        <Route path="/order-success" element={<ProtectedRoute component={OrderSuccessPage} />} />
                     </Routes>
                 </main>
             </div>
