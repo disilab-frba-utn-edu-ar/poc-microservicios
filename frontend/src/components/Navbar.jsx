@@ -11,7 +11,7 @@ const Navbar = () => {
         <header className="bg-white shadow-md sticky top-0 z-10">
             <nav className="container mx-auto px-4 py-3 flex justify-between items-center">
                 <Link to="/" className="text-2xl font-bold text-blue-600 hover:text-blue-800">
-                    E-Store
+                    DDS-CART
                 </Link>
                 <div className="flex items-center space-x-4">
                     {isAuthenticated && (
