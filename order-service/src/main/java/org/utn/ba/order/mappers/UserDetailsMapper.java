@@ -9,7 +9,8 @@ public class UserDetailsMapper {
     return UserDetailsDTO.builder()
         .userId(userDetails.getUserId())
         .userEmail(userDetails.getUserEmail())
-        .name(userDetails.getName())
+        .fullName(userDetails.getFullName())
+        .firstName(userDetails.getFirstName())
         .build();
   }
 
@@ -18,7 +19,8 @@ public class UserDetailsMapper {
     return UserDetails.builder()
         .userId(dto.userId())
         .userEmail(dto.userEmail())
-        .name(dto.name())
+        .fullName(dto.fullName())
+        .firstName(dto.firstName())
         .build();
   }
 }

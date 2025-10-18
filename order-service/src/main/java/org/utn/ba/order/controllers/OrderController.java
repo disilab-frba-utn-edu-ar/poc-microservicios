@@ -1,6 +1,7 @@
 package org.utn.ba.order.controllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -19,6 +20,15 @@ public class OrderController {
 
     @Autowired
     private IOrderService orderService;
+
+    @Value("${auth0.claims.email}")
+    private String emailClaimName;
+
+    @Value("${auth0.claims.name}")
+    private String nameClaimName;
+
+    @Value("${auth0.claims.given-name}")
+    private String givenNameClaims;
 
     @GetMapping
     public ResponseEntity<List<OrderOutputDTO>> getAllOrders() {
@@ -44,13 +54,15 @@ public class OrderController {
     public ResponseEntity<OrderOutputDTO> createOrder(@AuthenticationPrincipal Jwt jwt) {
 
         String userId = jwt.getSubject();
-        String userEmail = jwt.getClaimAsString("email");
-        String userName = jwt.getClaimAsString("name");
+        String userEmail = jwt.getClaimAsString(emailClaimName);
+        String userFullName = jwt.getClaimAsString(nameClaimName);
+        String userGivenName = jwt.getClaimAsString(givenNameClaims);
 
         UserDetailsDTO userDetails = UserDetailsDTO.builder()
             .userId(userId)
             .userEmail(userEmail)
-            .name(userName)
+            .fullName(userFullName)
+            .firstName(userGivenName)
             .build();
 
         OrderOutputDTO createdOrder = orderService.createOrder(userDetails);
