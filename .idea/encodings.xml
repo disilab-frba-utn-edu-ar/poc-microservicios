@@ -1,12 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
-  <component name="Encoding">
+  <component name="Encoding" defaultCharsetForPropertiesFiles="UTF-8">
+    <file url="file://$PROJECT_DIR$/cart-service" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/cart-service/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/discovery-service/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/discovery-service/src/main/resources/application.properties" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/event-dtos/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/event-dtos/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/gateway-service" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/gateway-service/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/notification-service" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/notification-service/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/order-service" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/order-service/src/main/java" charset="UTF-8" />
-    <file url="file://$PROJECT_DIR$/organization-service/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/order-service/src/main/resources/application.properties" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/product-service" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/product-service/src/main/java" charset="UTF-8" />
-    <file url="file://$PROJECT_DIR$/site-service/src/main/java" charset="UTF-8" />
-    <file url="file://$PROJECT_DIR$/user-service/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/product-service/src/main/resources/application.properties" charset="UTF-8" />
+    <file url="PROJECT" charset="UTF-8" />
   </component>
 </project>

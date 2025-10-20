@@ -10,12 +10,21 @@ spring:
         - id: product-service
           uri: lb://product-service
           predicates:
-            - Path=/products/**
+            - Path=/products/**, /images/**
         - id: order-service
           uri: lb://order-service
           predicates:
             - Path=/orders/**
-
+        - id: cart-service
+          uri: lb://cart-service
+          predicates:
+            - Path=/carts/**
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: https://dev-skt01p8dhor0esjl.us.auth0.com/
+          audiences: https://ddsi.com/api/ddsi-poc-microservicios
 management:
   endpoints:
     web:
@@ -31,3 +40,5 @@ eureka:
     serviceUrl:
       defaultZone: http://localhost:8761/eureka/
     registerWithEureka: true
+
+

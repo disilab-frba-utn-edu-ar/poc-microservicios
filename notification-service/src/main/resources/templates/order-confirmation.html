@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Confirmación de Pedido</title>
+    <style>
+        body { font-family: sans-serif; line-height: 1.5; color: #333; margin: 0; padding: 0; background-color: #f4f4f4; }
+        .container { max-width: 600px; margin: 20px auto; padding: 20px; border: 1px solid #ddd; border-radius: 8px; background-color: #ffffff; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        .header { background-color: #f8f8f8; padding: 15px 20px; text-align: center; border-bottom: 1px solid #ddd; border-radius: 8px 8px 0 0; }
+        .header h2 { margin: 0; color: #2a7ae2;}
+        .item { display: flex; align-items: center; border-bottom: 1px solid #eee; padding: 15px 0; }
+        .item:last-child { border-bottom: none; }
+        .item img { width: 60px; height: 60px; object-fit: cover; margin-right: 15px; border-radius: 4px; border: 1px solid #eee; }
+        .item-details { flex-grow: 1; font-size: 0.9em; }
+        .item-details strong { font-size: 1.05em; color: #000; }
+        .total { text-align: right; margin-top: 20px; padding-top: 15px; border-top: 1px solid #ddd; font-size: 1.2em; font-weight: bold; color: #2a7ae2; }
+        p { margin: 10px 0; }
+        h3 { margin-top: 20px; border-bottom: 1px solid #eee; padding-bottom: 5px; color: #555; }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="header">
+        <h2>Confirmación de Pedido</h2>
+    </div>
+    <p>Hola <strong th:text="${firstName}">[Nombre Cliente]</strong>,</p>
+    <p>¡Gracias por tu pedido! Aquí tienes los detalles:</p>
+    <p><strong>ID de Pedido:</strong> <span th:text="${orderId}">[ID Pedido]</span></p>
+    <p><strong>Fecha de Pedido:</strong> <span th:text="${#temporals.format(orderDate, 'dd MMM, yyyy')}">[Fecha Pedido]</span></p>
+
+    <h3>Artículos Pedidos:</h3>
+    <div th:each="item : ${items}" class="item">
+        <div class="item-details">
+            <strong th:text="${item.productName}">[Nombre Producto]</strong><br/>
+            <span>Cantidad: <span th:text="${item.amount}">[Cant]</span></span><br/>
+            <span>Precio: $<span th:text="${#numbers.formatDecimal(item.price, 1, 'POINT', 2, 'COMMA')}">[Precio]</span></span> </div>
+    </div>
+
+    <div class="total">
+        Precio Total: $<span th:text="${#numbers.formatDecimal(finalPrice, 1, 'POINT', 2, 'COMMA')}">[Precio Total]</span> </div>
+
+    <p>¡Gracias por comprar con nosotros!</p>
+</div>
+</body>
+</html>

@@ -14,6 +14,7 @@ public class ProductOutputDTO {
     private Long id;
     private String name;
     private Float price;
+    private String imageUrl;
 
     public ProductOutputDTO(Long id) {
         this.id = id;
