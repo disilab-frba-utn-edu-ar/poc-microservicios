@@ -55,7 +55,7 @@ src/
 - **3.** Correr el Service Registry & Discovery. Iniciará en el puerto `8761` por defecto. Una vez que inicie la aplicación, podrás visitar el *dashboard* de Eureka bajo  `http://localhost:8761`.
 - **4.** Correr los microservicios de Productos, Órdenes, Carrito y Notificaciones. Además, para el envío de mail se debe crear un servidor de mail propio y configurarlo en el application.properties del microservicio de Notificaciones. 
 - **5.** Correr el API Gateway. Este permitirá redirigir cualquier solicitud al microservicio específico dependiendo de la configuración del *proxy*.
-- **6** Correr el front server con el comando npm run dev, el cual se levantará en el puerto 3000. 
+- **6.** Correr el front server con el comando npm run dev, el cual se levantará en el puerto 3000. 
   
 ## Circuit Breaker
 En caso de que una instancia del microservicio de Productos falle o esté caído y se realice una solicitud a este mediante el microservicio de Órdenes, se activará el Circuit Breaker provisto por Resilience4J. La misma situación ocurrirá al realizar una solicitud desde el microservicio de Carrito a Productos.
