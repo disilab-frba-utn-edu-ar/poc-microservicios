@@ -11,7 +11,7 @@ import org.utn.ba.order.dto.OrderOutputDTO;
 import org.utn.ba.order.dto.UserDetailsDTO;
 import org.utn.ba.order.entities.models.Order;
 import org.utn.ba.order.entities.models.OrderItem;
-import org.utn.ba.order.entities.repositories.repositories.OrderRepository;
+import org.utn.ba.order.entities.repositories.OrderRepository;
 import org.utn.ba.order.mappers.OrderMapper;
 import org.utn.ba.order.mappers.UserDetailsMapper;
 import org.utn.ba.order.services.ClearCartEventPublisher;

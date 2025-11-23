@@ -1,4 +1,4 @@
-package org.utn.ba.order.entities.repositories.repositories;
+package org.utn.ba.order.entities.repositories;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
