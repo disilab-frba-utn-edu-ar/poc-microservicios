@@ -8,39 +8,39 @@ scrape_configs:
     static_configs:
       - targets: ['ejemploecommerce-gatewayservice-ynuwjj:8080']
         labels:
-          application: 'Gateway Service'
+          application: 'gateway-service'
 
   - job_name: 'discovery-service'
     metrics_path: '/actuator/prometheus'
     static_configs:
       - targets: ['ejemploecommerce-discoveryservice-sluvzl:8761']
         labels:
-          application: 'Discovery Service'
+          application: 'discovery-service'
 
   - job_name: 'product-service'
     metrics_path: '/actuator/prometheus'
     static_configs:
       - targets: ['ejemploecommerce-productservice-hoja7z:9811']
         labels:
-          application: 'Product Service'
+          application: 'product-service'
 
   - job_name: 'order-service'
     metrics_path: '/actuator/prometheus'
     static_configs:
       - targets: ['ejemploecommerce-orderservice-wxq7uc:9812']
         labels:
-          application: 'Order Service'
+          application: 'order-service'
 
   - job_name: 'cart-service'
     metrics_path: '/actuator/prometheus'
     static_configs:
       - targets: ['ejemploecommerce-cartservice-wltex3:9813']
         labels:
-          application: 'Cart Service'
+          application: 'cart-service'
 
   - job_name: 'notification-service'
     metrics_path: '/actuator/prometheus'
     static_configs:
       - targets: ['ejemploecommerce-notificationservice-m6fdfp:9814']
         labels:
-          application: 'Notification Service'
+          application: 'notification-service'

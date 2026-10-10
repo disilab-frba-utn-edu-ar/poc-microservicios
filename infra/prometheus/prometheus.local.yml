@@ -6,33 +6,41 @@ scrape_configs:
   - job_name: 'gateway-service'
     metrics_path: '/actuator/prometheus'
     static_configs:
-      - targets: ['host.docker.internal:8080'] ## only for demo purposes don't use host.docker.internal in production
-        # for production, replace with container name
+      - targets: ['host.docker.internal:8080']
+        labels:
+          application: 'gateway-service'
+
   - job_name: 'discovery-service'
     metrics_path: '/actuator/prometheus'
     static_configs:
-      - targets: [ 'host.docker.internal:8761' ] ## only for demo purposes don't use host.docker.internal in production
+      - targets: ['host.docker.internal:8761']
+        labels:
+          application: 'discovery-service'
+
   - job_name: 'product-service'
     metrics_path: '/actuator/prometheus'
     static_configs:
-      - targets: ['host.docker.internal:9811'] ## only for demo purposes don't use host.docker.internal in production
+      - targets: ['host.docker.internal:9811']
         labels:
-          application: 'Product Service'
+          application: 'product-service'
+
   - job_name: 'order-service'
     metrics_path: '/actuator/prometheus'
     static_configs:
-      - targets: ['host.docker.internal:9812'] ## only for demo purposes don't use host.docker.internal in production
+      - targets: ['host.docker.internal:9812']
         labels:
-          application: 'Order Service'
+          application: 'order-service'
+
   - job_name: 'cart-service'
     metrics_path: '/actuator/prometheus'
     static_configs:
-      - targets: ['host.docker.internal:9813'] ## only for demo purposes don't use host.docker.internal in production
+      - targets: ['host.docker.internal:9813']
         labels:
-          application: 'Cart Service'
+          application: 'cart-service'
+
   - job_name: 'notification-service'
     metrics_path: '/actuator/prometheus'
     static_configs:
-      - targets: ['host.docker.internal:9814'] ## only for demo purposes don't use host.docker.internal in production
+      - targets: ['host.docker.internal:9814']
         labels:
-          application: 'Notification Service'
+          application: 'notification-service'

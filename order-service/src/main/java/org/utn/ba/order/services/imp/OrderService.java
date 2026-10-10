@@ -28,8 +28,14 @@ import com.stripe.model.checkout.Session;
 import com.stripe.param.checkout.SessionCreateParams;
 import org.utn.ba.order.dto.CheckoutRequestDTO;
 
+import io.micrometer.observation.Observation;
+import io.micrometer.observation.ObservationRegistry;
+
 @Service
 public class OrderService implements IOrderService {
+
+  @Autowired
+  private ObservationRegistry observationRegistry;
 
   @Value("${stripe.api.key}")
   private String stripeApiKey;
@@ -124,7 +130,9 @@ public class OrderService implements IOrderService {
             .addAllLineItem(stripeLineItems)
             .build();
 
-        Session session = Session.create(params);
+        Session session = Observation.createNotStarted("stripe.checkout.session", observationRegistry)
+            .lowCardinalityKeyValue("peer.service", "stripe")
+            .observeChecked(() -> Session.create(params));
 
         newOrder.setStripeSessionId(session.getId());
         this.orderRepository.save(newOrder);
