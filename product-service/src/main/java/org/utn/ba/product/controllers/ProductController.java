@@ -1,6 +1,5 @@
 package org.utn.ba.product.controllers;
 
-import jakarta.ws.rs.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -8,6 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.utn.ba.product.dto.ProductInputDTO;
 import org.utn.ba.product.dto.ProductOutputDTO;
+import org.utn.ba.product.exceptions.NotFoundException;
 import org.utn.ba.product.services.IProductService;
 
 import java.util.List;
