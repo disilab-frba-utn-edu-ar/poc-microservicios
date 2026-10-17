@@ -6,5 +6,6 @@ import java.util.List;
 
 @Builder
 public record OrderOutputDTO(Long id, LocalDate date, Float finalPrice, UserDetailsDTO userDetails,
-                             List<OrderItemOutputDTO> orderItems, String description) {
+                             List<OrderItemOutputDTO> orderItems, String description,
+                             String status, String stripeCheckoutUrl, String stripeSessionId) {
 }

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { toast } from 'react-toastify';
 
-const CartItemCard = ({ item, onUpdate, onDelete, apiBaseUrl }) => {
+const CartItemCard = ({ item, onUpdate, onDelete, s3BaseUrl }) => {
     const [currentQuantity, setCurrentQuantity] = useState(item.amount);
     const [isSaving, setIsSaving] = useState(false);
     const [imageLoaded, setImageLoaded] = useState(false);
@@ -62,7 +62,7 @@ const CartItemCard = ({ item, onUpdate, onDelete, apiBaseUrl }) => {
                                 </div>
                             ) : (
                                 <img 
-                                    src={`${apiBaseUrl}${item.imageUrl}`} 
+                                    src={`${s3BaseUrl}${item.imageUrl}`} 
                                     alt={item.productName}
                                     className={`w-full h-full object-cover transition-all duration-300 ${
                                         imageLoaded ? 'opacity-100' : 'opacity-0'

@@ -27,6 +27,7 @@ public class SecurityConfig {
         .authorizeHttpRequests(auth -> auth
             .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
             .requestMatchers("/actuator/**").permitAll()
+            .requestMatchers("/orders/webhook").permitAll()
             .requestMatchers("/orders/**").hasAuthority("SCOPE_customer")
             .anyRequest().authenticated()
         )

@@ -76,21 +76,29 @@ export const CartProvider = ({ children }) => {
         }
     }, [isAuthenticated]);
 
+    const clearLocalCart = useCallback(() => {
+        setCart(null);
+    }, []);
+
     const checkout = useCallback(async () => {
         if (!isAuthenticated) {
             throw new Error("User not authenticated.");
         }
 
         try {
-            const response = await apiClient.post('/orders');
+            const checkoutPayload = {
+                successUrl: `${window.location.origin}/order-success?session_id={CHECKOUT_SESSION_ID}`,
+                cancelUrl: `${window.location.origin}/cart`
+            };
+            const response = await apiClient.post('/orders', checkoutPayload);
 
             if (response.data && response.data.description && !response.data.id) {
                 console.warn("Checkout fallback response received:", response.data.description);
                 throw new Error(response.data.description);
             }
             else if (response.data && response.data.id) {
-                await fetchCart();
-                console.log("hola estoy aca " + cart)
+                // Do not clear the cart locally immediately; Webhook will do it.
+                // We will optimistically clear it on the success page instead.
                 return response.data;
             }
             else {
@@ -101,7 +109,7 @@ export const CartProvider = ({ children }) => {
             console.error('Error during checkout API call:', error);
             throw error;
         }
-    }, [isAuthenticated, fetchCart]);
+    }, [isAuthenticated]);
 
     const cartCount = cart?.items ? cart.items.reduce((count, item) => count + item.amount, 0) : 0;
 
@@ -113,7 +121,8 @@ export const CartProvider = ({ children }) => {
         addToCart,
         updateCartItem,
         removeFromCart,
-        checkout
+        checkout,
+        clearLocalCart
     };
 
     return (

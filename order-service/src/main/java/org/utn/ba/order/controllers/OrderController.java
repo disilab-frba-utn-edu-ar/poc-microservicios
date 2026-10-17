@@ -7,6 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.*;
+import org.utn.ba.order.dto.CheckoutRequestDTO;
 import org.utn.ba.order.dto.OrderOutputDTO;
 import org.utn.ba.order.dto.UserDetailsDTO;
 import org.utn.ba.order.entities.models.UserDetails;
@@ -50,13 +51,32 @@ public class OrderController {
                 .body(orderOutputDTO);
     }
 
+    @GetMapping("/session/{sessionId}")
+    public ResponseEntity<OrderOutputDTO> getOrderBySessionId(@PathVariable String sessionId, @AuthenticationPrincipal Jwt jwt) {
+        String userId = jwt.getSubject();
+        
+        OrderOutputDTO orderOutputDTO = this.orderService.findByStripeSessionIdForUser(sessionId, userId);
+        if (orderOutputDTO == null) {
+            return ResponseEntity.notFound().build();
+        }
+
+        return ResponseEntity.ok(orderOutputDTO);
+    }
+
     @PostMapping
-    public ResponseEntity<OrderOutputDTO> createOrder(@AuthenticationPrincipal Jwt jwt) {
+    public ResponseEntity<OrderOutputDTO> createOrder(@AuthenticationPrincipal Jwt jwt, @RequestBody CheckoutRequestDTO requestDTO) {
 
         String userId = jwt.getSubject();
         String userEmail = jwt.getClaimAsString(emailClaimName);
         String userFullName = jwt.getClaimAsString(nameClaimName);
+        if (userFullName == null || userFullName.isEmpty()) {
+            userFullName = userEmail;
+        }
+
         String userGivenName = jwt.getClaimAsString(givenNameClaims);
+        if (userGivenName == null || userGivenName.isEmpty()) {
+            userGivenName = userFullName != null ? userFullName.split("@")[0] : "Cliente";
+        }
 
         UserDetailsDTO userDetails = UserDetailsDTO.builder()
             .userId(userId)
@@ -65,7 +85,7 @@ public class OrderController {
             .firstName(userGivenName)
             .build();
 
-        OrderOutputDTO createdOrder = orderService.createOrder(userDetails);
+        OrderOutputDTO createdOrder = orderService.createOrder(userDetails, requestDTO);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(createdOrder);
     }

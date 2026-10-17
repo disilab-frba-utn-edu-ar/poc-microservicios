@@ -10,7 +10,7 @@ spring:
         - id: product-service
           uri: lb://product-service
           predicates:
-            - Path=/products/**, /images/**
+            - Path=/products/**, /files/**
         - id: order-service
           uri: lb://order-service
           predicates:
@@ -29,11 +29,22 @@ management:
   endpoints:
     web:
       exposure:
-        include: health, info  # Habilita los endpoints health e info
+        include: health, info, metrics, prometheus  # Habilita los endpoints health e info
   endpoint:
     health:
       show-details: always  # Muestra todos los detalles en /actuator/health
-
+  metrics:
+    distribution:
+      percentiles-histogram:
+        http:
+          server:
+            requests: true
+  observations:
+    key-values:
+      application: gateway-service
+  tracing:
+    sampling:
+      probability: 1.0
 
 eureka:
   client:

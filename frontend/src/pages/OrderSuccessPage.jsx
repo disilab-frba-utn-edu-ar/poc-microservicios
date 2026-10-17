@@ -1,11 +1,72 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
+import { useCart } from '../contexts/CartContext';
+import apiClient from '../services/api';
 
 const OrderSuccessPage = () => {
     const location = useLocation();
-    const orderData = location.state?.orderData;
+    const searchParams = new URLSearchParams(location.search);
+    const sessionId = searchParams.get('session_id');
+    const { clearLocalCart } = useCart();
+    
+    const [orderData, setOrderData] = useState(null);
+    const [isLoading, setIsLoading] = useState(true);
+    const [isPolling, setIsPolling] = useState(false);
+    const [pollCount, setPollCount] = useState(0);
 
-    if (!orderData) {
+    useEffect(() => {
+        let timeoutId;
+        
+        const fetchOrder = async () => {
+            if (!sessionId) return;
+            
+            try {
+                const response = await apiClient.get(`/orders/session/${sessionId}`);
+                const data = response.data;
+                
+                setOrderData(data);
+                
+                // If it's still pending and we haven't polled 10 times (20 seconds), keep polling
+                if (data.status === 'PENDING' && pollCount < 10) {
+                    setIsPolling(true);
+                    timeoutId = setTimeout(() => {
+                        setPollCount(prev => prev + 1);
+                    }, 2000);
+                } else {
+                    // Terminal state or max polls reached
+                    setIsPolling(false);
+                    setIsLoading(false);
+                    if (data.status === 'PAID') {
+                        clearLocalCart();
+                    }
+                }
+            } catch (error) {
+                console.error("Failed to fetch order:", error);
+                setIsLoading(false);
+                setIsPolling(false);
+            }
+        };
+
+        fetchOrder();
+
+        return () => {
+            if (timeoutId) clearTimeout(timeoutId);
+        };
+    }, [sessionId, pollCount, clearLocalCart]);
+
+    if (isLoading && !orderData) {
+        return (
+            <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
+                <div className="text-center">
+                    <div className="w-16 h-16 border-4 border-blue-500 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+                    <h2 className="text-2xl font-bold text-gray-900 mb-2">Confirmando tu pago...</h2>
+                    <p className="text-gray-600">Por favor, espera un momento mientras validamos la transacción con Stripe.</p>
+                </div>
+            </div>
+        );
+    }
+
+    if (!orderData && !sessionId) {
         return (
             <div className="min-h-screen bg-gradient-to-br from-red-50 via-white to-orange-50 flex items-center justify-center px-4">
                 <div className="max-w-2xl mx-auto text-center">
@@ -28,6 +89,37 @@ const OrderSuccessPage = () => {
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
                         </svg>
                         <span>Volver al Inicio</span>
+                    </Link>
+                </div>
+            </div>
+        );
+    }
+
+    if (!orderData && sessionId) {
+        return (
+            <div className="min-h-screen bg-gradient-to-br from-green-50 via-white to-emerald-50 flex items-center justify-center px-4">
+                <div className="max-w-4xl mx-auto text-center">
+                    <div className="mx-auto w-24 h-24 bg-green-100 rounded-full flex items-center justify-center mb-6 success-icon">
+                        <svg className="w-12 h-12 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                        </svg>
+                    </div>
+                    <h1 className="text-4xl font-bold text-gray-900 mb-4">
+                        ¡Pago Procesado Exitosamente!
+                    </h1>
+                    <p className="text-xl text-gray-600 mb-6">
+                        Gracias por tu compra. Tu pago a través de Stripe ha sido confirmado y tu pedido está siendo procesado.
+                    </p>
+                    <div className="bg-green-50 border border-green-200 rounded-lg p-4 mb-6">
+                        <p className="text-green-800 font-medium">
+                            Recibirás un correo electrónico con los detalles completos del pedido en breve.
+                        </p>
+                    </div>
+                    <Link 
+                        to="/" 
+                        className="inline-flex items-center justify-center space-x-3 bg-gradient-to-r from-blue-500 to-blue-600 text-white px-8 py-4 rounded-xl font-semibold text-lg hover:from-blue-600 hover:to-blue-700 hover:shadow-xl transform hover:scale-105 transition-all duration-200"
+                    >
+                        <span>Seguir Comprando</span>
                     </Link>
                 </div>
             </div>
@@ -60,14 +152,17 @@ const OrderSuccessPage = () => {
 
                 <div className="text-center mb-8 slide-up">
                     <h1 className="text-4xl font-bold text-gray-900 mb-4">
-                        ¡Compra Realizada Exitosamente!
+                        {orderData.status === 'PENDING' ? '¡Tu pago está en proceso!' : '¡Compra Realizada Exitosamente!'}
                     </h1>
                     <p className="text-xl text-gray-600 mb-6">
-                        Gracias por tu compra, {orderData.userDetails.firstName}. Tu pedido ha sido procesado y recibirás una confirmación por correo electrónico.
+                        Gracias por tu compra, {orderData.userDetails.firstName}. 
+                        {orderData.status === 'PENDING' 
+                            ? ' Tu pedido se está procesando de manera segura. Te enviaremos un correo en cuanto se confirme el pago.' 
+                            : ' Tu pedido ha sido procesado y recibirás una confirmación por correo electrónico.'}
                     </p>
                     <div className="bg-green-50 border border-green-200 rounded-lg p-4 mb-6">
                         <p className="text-green-800 font-medium">
-                            📧 Te hemos enviado un correo de confirmación a {orderData.userDetails.userEmail} con todos los detalles de tu pedido.
+                            📧 Te hemos enviado un correo a {orderData.userDetails.userEmail} con los detalles de tu pedido.
                         </p>
                     </div>
                 </div>
@@ -129,7 +224,7 @@ const OrderSuccessPage = () => {
                                     <div className="w-16 h-16 bg-gray-200 rounded-lg overflow-hidden">
                                         {item.imageUrl ? (
                                             <img 
-                                                src={`${import.meta.env.VITE_API_BASE_URL}${item.imageUrl}`}
+                                                src={`${import.meta.env.VITE_S3_BASE_URL}${item.imageUrl}`}
                                                 alt={item.productName}
                                                 className="w-full h-full object-cover"
                                             />
@@ -171,7 +266,7 @@ const OrderSuccessPage = () => {
                         className="inline-flex items-center justify-center space-x-3 bg-white text-gray-700 border-2 border-gray-300 px-8 py-4 rounded-xl font-semibold text-lg hover:bg-gray-50 hover:border-gray-400 hover:shadow-lg transform hover:scale-105 transition-all duration-200"
                     >
                         <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 3h2l.4 2M7 13h10l4-8H5.4m0 0L7 13m0 0l-2.5 5M7 13l2.5 5m6-5v6a2 2 0 01-2 2H9a2 2 0 01-2-2v-6m8 0V9a2 2 0 00-2-2H9a2 2 0 00-2 2v4.01" />
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
                         </svg>
                         <span>Ver Carrito</span>
                     </Link>

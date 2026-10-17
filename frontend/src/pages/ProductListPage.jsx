@@ -10,7 +10,7 @@ const ProductListPage = () => {
     const [products, setProducts] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
     const { isAuthenticated, loginWithRedirect } = useAuth0();
-    const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
+    const S3_BASE_URL = import.meta.env.VITE_S3_BASE_URL;
     const { addToCart } = useCart();
 
     useEffect(() => {
@@ -92,7 +92,7 @@ const ProductListPage = () => {
                             onAddToCart={handleAddToCart}
                             isAuthenticated={isAuthenticated}
                             loginWithRedirect={loginWithRedirect}
-                            API_BASE_URL={API_BASE_URL}
+                            S3_BASE_URL={S3_BASE_URL}
                         />
                     ))}
                 </div>

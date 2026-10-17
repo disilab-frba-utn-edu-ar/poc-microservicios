@@ -102,7 +102,7 @@ const LandingPage = () => {
                                     <div className="aspect-square bg-gray-100 relative overflow-hidden">
                                         {product.imageUrl ? (
                                             <img 
-                                                src={`${import.meta.env.VITE_API_BASE_URL}${product.imageUrl}`}
+                                                src={`${import.meta.env.VITE_S3_BASE_URL}${product.imageUrl}`}
                                                 alt={product.name}
                                                 className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                                             />

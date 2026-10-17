@@ -81,25 +81,39 @@ const AdminPage = () => {
         }
 
         setIsSubmitting(true);
-        const formData = new FormData();
-        formData.append('file', file, file.name);
-        const productData = { name, price: parseFloat(price) };
-        const productBlob = new Blob([JSON.stringify(productData)], { type: 'application/json' });
-        formData.append('product', productBlob);
-
-        const creationPromise = apiClient.post('/products', formData);
-
-        toast.promise(
-            creationPromise,
-            {
-                pending: 'Creando producto...',
-                success: '¡Producto creado exitosamente!',
-                error: 'Error al crear el producto. Intentelo más tarde'
-            }
-        );
 
         try {
-            await creationPromise;
+            const presignedRes = await apiClient.get('/files/presigned-url', {
+                params: {
+                    fileName: file.name,
+                    contentType: file.type
+                }
+            });
+
+            const { presignedUrl, objectKey } = presignedRes.data;
+
+            const uploadResponse = await fetch(presignedUrl, {
+                method: 'PUT',
+                body: file,
+                headers: {
+                    'Content-Type': file.type
+                }
+            });
+
+            if (!uploadResponse.ok) {
+                throw new Error('Falló la subida de la imagen a S3');
+            }
+
+            const productData = {
+                name: name,
+                price: parseFloat(price),
+                tempImageKey: objectKey
+            };
+
+            await apiClient.post('/products', productData);
+
+            toast.success('¡Producto creado exitosamente!');
+
             setName('');
             setPrice('');
             setFile(null);
@@ -107,6 +121,7 @@ const AdminPage = () => {
             e.target.reset();
         } catch (error) {
             console.error("Product creation failed:", error);
+            toast.error('Error al crear el producto. Inténtelo más tarde.');
         } finally {
             setIsSubmitting(false);
         }

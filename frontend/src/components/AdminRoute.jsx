@@ -1,6 +1,6 @@
 import React from 'react';
 import { withAuthenticationRequired } from '@auth0/auth0-react';
-import { useAdminCheck } from '../hooks/useAdminCheck';
+import { useAdminCheck } from '../hooks/UseAdminCheck.jsx';
 import LoadingSpinner from './LoadingSpinner';
 
 const AdminRoute = ({ component }) => {

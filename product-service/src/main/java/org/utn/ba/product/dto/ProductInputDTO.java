@@ -11,5 +11,5 @@ public class ProductInputDTO {
 
     private String name;
     private Float price;
-    private String imageUrl;
+    private String tempImageKey;
 }

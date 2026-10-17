@@ -36,6 +36,7 @@ public class SecurityConfig {
             .pathMatchers(HttpMethod.PUT, "/products/**").hasAuthority("SCOPE_admin")
             .pathMatchers(HttpMethod.DELETE, "/products/**").hasAuthority("SCOPE_admin")
             .pathMatchers("/carts/**").hasAuthority("SCOPE_customer")
+            .pathMatchers(HttpMethod.POST, "/orders/webhook").permitAll()
             .pathMatchers("/orders/**").hasAuthority("SCOPE_customer")
             .anyExchange().authenticated()
         )
@@ -47,15 +48,15 @@ public class SecurityConfig {
   @Bean
   public CorsConfigurationSource corsConfigurationSource() {
     CorsConfiguration configuration = new CorsConfiguration();
-    configuration.setAllowedOriginPatterns(List.of("http://127.0.0.1:3000","http://localhost:3000"));
+    configuration.setAllowedOriginPatterns(List.of("https://front-ddsi-cart.dds.apps.disilab.ar","http://localhost:3000"));
 
     configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"));
 
-    configuration.setAllowedHeaders(List.of("*"));
+    configuration.setAllowedHeaders(List.of("Authorization", "Content-Type"));
 
     configuration.setAllowCredentials(true);
 
-    configuration.setExposedHeaders(List.of("Authorization"));
+//    configuration.setExposedHeaders(List.of("Authorization"));
 
     UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
     source.registerCorsConfiguration("/**", configuration);

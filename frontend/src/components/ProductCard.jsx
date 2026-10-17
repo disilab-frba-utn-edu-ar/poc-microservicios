@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 
-const ProductCard = ({ product, onAddToCart, isAuthenticated, loginWithRedirect, API_BASE_URL }) => {
+const ProductCard = ({ product, onAddToCart, isAuthenticated, loginWithRedirect, S3_BASE_URL }) => {
     const [isAddingToCart, setIsAddingToCart] = useState(false);
     const [imageLoaded, setImageLoaded] = useState(false);
     const [imageError, setImageError] = useState(false);
@@ -48,7 +48,7 @@ const ProductCard = ({ product, onAddToCart, isAuthenticated, loginWithRedirect,
                     </div>
                 ) : (
                     <img 
-                        src={API_BASE_URL + product.imageUrl} 
+                        src={S3_BASE_URL + product.imageUrl} 
                         alt={product.name}
                         className={`w-full h-full object-cover transition-all duration-500 group-hover:scale-110 ${
                             imageLoaded ? 'opacity-100' : 'opacity-0'

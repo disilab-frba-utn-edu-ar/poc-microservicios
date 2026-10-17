@@ -42,7 +42,86 @@ services:
     depends_on:
       - kafka
     ports:
-      - "9000:9000"
+      - "9004:9000"
     environment:
       KAFKA_BROKERCONNECT: kafka:29092
       CMD_ARGS: --message.format=DEFAULT --message.sendEnabled=true --server.servlet.contextPath=/
+
+
+  loki:
+    image: grafana/loki:3.0.0
+    container_name: loki
+    command: [ "-config.file=/etc/loki/local-config.yaml" ]
+    ports:
+      - "3100:3100"
+
+  prometheus:
+    image: prom/prometheus:v2.46.0
+    container_name: prometheus
+    command:
+      - --enable-feature=exemplar-storage
+      - --config.file=/etc/prometheus/prometheus.local.yml
+    volumes:
+      - ./infra/prometheus/prometheus.local.yml:/etc/prometheus/prometheus.local.yml:ro
+    ports:
+      - "9090:9090"
+
+  tempo:
+    image: grafana/tempo:2.2.2
+    container_name: tempo
+    command: [ "-config.file=/etc/tempo.local.yaml" ]
+    volumes:
+      - ./infra/tempo/tempo.local.yml:/etc/tempo.local.yaml:ro
+      - ./data/tempo:/tmp/tempo
+    ports:
+      - "3110:3100"  # Tempo
+      - "9411:9411" # zipkin
+  grafana:
+    image: grafana/grafana:10.1.0
+    container_name: grafana
+    volumes:
+      - ./infra/grafana:/etc/grafana/provisioning/datasources:ro
+    environment:
+      - GF_AUTH_ANONYMOUS_ENABLED=true
+      - GF_AUTH_ANONYMOUS_ORG_ROLE=Admin
+      - GF_AUTH_DISABLE_LOGIN_FORM=true
+    ports:
+      - "3003:3000"
+
+  minio:
+    image: quay.io/minio/minio:latest
+    container_name: minio
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    environment:
+      MINIO_ROOT_USER: minioadmin
+      MINIO_ROOT_PASSWORD: minioadmin
+      MINIO_DEFAULT_BUCKETS: ecommerce
+    command: server /data --console-address ":9001"
+    volumes:
+        - minio_data:/data
+
+  minio-setup:
+    image: quay.io/minio/mc
+    depends_on:
+      - minio
+    entrypoint: >
+      /bin/sh -c "
+      echo 'Esperando a MinIO...';
+      sleep 5;
+      
+      mc alias set myminio http://minio:9000 minioadmin minioadmin;
+      
+      mc mb myminio/ecommerce --ignore-existing;
+      
+      mc anonymous set download myminio/ecommerce;
+      
+      mc ilm add --expire-days 1 myminio/ecommerce --prefix 'temp/';
+      
+      echo '¡Setup de infraestructura finalizado exitosamente!';
+      exit 0;
+      "
+
+volumes:
+  minio_data:
