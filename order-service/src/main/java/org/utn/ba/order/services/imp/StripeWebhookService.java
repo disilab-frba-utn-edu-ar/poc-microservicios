@@ -34,10 +34,10 @@ public class StripeWebhookService {
                 
                 if (session != null && session.getClientReferenceId() != null) {
                     Long orderId = Long.parseLong(session.getClientReferenceId());
-                    log.info("✅ Payment successful webhook received for Order ID: {}", orderId);
+                    log.info("Payment successful webhook received for Order ID: {}", orderId);
                     orderService.confirmPayment(orderId);
                 } else {
-                    log.warn("⚠️ Received checkout.session.completed but session or clientReferenceId is null");
+                    log.warn("Received checkout.session.completed but session or clientReferenceId is null");
                 }
                 break;
             case "checkout.session.expired":
@@ -54,7 +54,7 @@ public class StripeWebhookService {
                     log.info("Payment failed or expired for Order ID: {}", orderId);
                     orderService.cancelOrder(orderId);
                 } else {
-                    log.warn("⚠️ Received checkout session failed event but session or clientReferenceId is null");
+                    log.warn("Received checkout session failed event but session or clientReferenceId is null");
                 }
                 break;
             default:
