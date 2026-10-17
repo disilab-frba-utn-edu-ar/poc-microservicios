@@ -14,12 +14,17 @@ import OrderSuccessPage from './pages/OrderSuccessPage';
 import NotFoundPage from './pages/NotFoundPage';
 import ProtectedRoute from './components/ProtectedRoute';
 import AdminRoute from "./components/AdminRoute.jsx";
+import LoadingSpinner from './components/LoadingSpinner';
 
 function App() {
-    const { getAccessTokenSilently, isAuthenticated } = useAuth0();
+    const { getAccessTokenSilently, isAuthenticated, isLoading } = useAuth0();
 
     // Register getter immediately during render so child components have access before mounting
-    setupInterceptors(getAccessTokenSilently);
+    setupInterceptors(isAuthenticated ? getAccessTokenSilently : null);
+
+    if (isLoading) {
+        return <LoadingSpinner />;
+    }
 
     return (
         <Router>
