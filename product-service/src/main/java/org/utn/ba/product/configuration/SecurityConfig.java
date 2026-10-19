@@ -33,6 +33,7 @@ public class SecurityConfig {
             .requestMatchers(HttpMethod.POST, "/products/**").hasAuthority("SCOPE_admin")
             .requestMatchers(HttpMethod.PUT, "/products/**").hasAuthority("SCOPE_admin")
             .requestMatchers(HttpMethod.DELETE, "/products/**").hasAuthority("SCOPE_admin")
+                //.requestMatchers("/files/**").hasAuthority("SCOPE_admin")
 
             .anyRequest().authenticated()
         )
