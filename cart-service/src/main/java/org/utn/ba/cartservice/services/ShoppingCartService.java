@@ -1,6 +1,7 @@
 package org.utn.ba.cartservice.services;
 
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
+import io.github.resilience4j.retry.annotation.Retry;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.utn.ba.cartservice.client.ProductClient;
@@ -28,6 +29,7 @@ public class ShoppingCartService implements IShoppingCartService {
 
   @Override
   @CircuitBreaker(name = "product", fallbackMethod = "addItemToCartFallback")
+  //@Retry(name = "product")
   public ShoppingCartOutputDTO addItemToCart(String userId, CartItemInputDTO itemInputDTO) {
     ShoppingCart cart = findOrCreateCart(userId);
 
