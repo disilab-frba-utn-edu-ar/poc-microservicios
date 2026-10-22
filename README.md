@@ -14,7 +14,8 @@ El sistema sigue un estilo arquitectónico de microservicios con integración ta
 - **Frontend SPA (:3000):** Aplicación web en React + Tailwind + Vite.
 
 El diagrama de componentes que comunica esta arquitectura es:
-<img width="1283" height="737" alt="image" src="https://github.com/user-attachments/assets/f5ada657-5782-40dd-8e1f-c7360d03bbcd" />
+<img width="1203" height="736" alt="image" src="https://github.com/user-attachments/assets/7c2c5d88-7ef6-4193-82f2-4051517b278f" />
+
 
 
 
